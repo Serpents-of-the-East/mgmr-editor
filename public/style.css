@@ -5,6 +5,7 @@
     padding: 0; /* Clears unordered list default of 40px */
 }
 
+
 .clear:after {
     content: "";
 }
@@ -40,4 +41,8 @@
     -ms-transform: skewY(-30deg) rotate(60deg);
     transform: skewY(-30deg) rotate(60deg);
     overflow: hidden;
+}
+
+.hexaparent li:nth-child(2n+4) { 
+    margin-left: 0.5%;
 }

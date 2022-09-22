@@ -9,8 +9,8 @@ const Editor = () => {
 
   const [currentSelected, setCurrentSelected] = createSignal(emptySection);
 
-  const [gridSizeX, setGridSizeX] = createSignal(1);
-  const [gridSizeY, setGridSizeY] = createSignal(1);
+  const [gridSizeX, setGridSizeX] = createSignal(3);
+  const [gridSizeY, setGridSizeY] = createSignal(4);
 
   const [worldmap, setWorldMap] = createSignal([[emptySection]])
 
@@ -23,9 +23,11 @@ const Editor = () => {
             <div class="w-full block">
               <For each={row}>
                 {(col, colIndex) => (
-                  <div style={{ width: `${100 / row.length}%`}} classList={{ 'translate-x-1/2': rowIndex % 2 === 1 }}>
+                  <div style={{ width: `10%`}} classList={{ 'translate-x-8': colIndex === 0}}>
                     <div class="hexaparent">
                       <div class="hexagon bg-secondary">
+                        {colIndex == 0 ? "Yeet" : "Nope"}{colIndex}
+                        console.log(colIndex)
                       </div>
                     </div>
                   </div>
@@ -58,9 +60,9 @@ const Editor = () => {
           </div>
           <button type="button" class="btn btn-primary" onClick={() => {
             const newMap = []
-            for (let i = 0; i < gridSizeY(); i++){
+            for (let i = 0; i < gridSizeX(); i++){
               let current = []
-              for (let j = 0; j < gridSizeX(); j++){
+              for (let j = 0; j < gridSizeY(); j++){
                 current.push(emptySection)
               }
               newMap.push(current)
