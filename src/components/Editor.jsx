@@ -15,32 +15,27 @@ const Editor = () => {
   const [worldmap, setWorldMap] = createSignal([[emptySection]])
 
   return (
-    <div class="h-full w-full">
+    <div class="h-full w-full flex">
 
-      <div class="w-full h-full clear">
+      <div class="h-full w-9/12 gap-1 my-1">
         <For each={worldmap()}>
           {(row, rowIndex) => (
-            <div class="w-full block">
+            <div class="w-full">
               <For each={row}>
                 {(col, colIndex) => (
-                  <div style={{ width: `10%`}} classList={{ 'translate-x-8': colIndex === 0}}>
-                    <div class="hexaparent">
-                      <div class="hexagon bg-secondary">
-                        {colIndex == 0 ? "Yeet" : "Nope"}{colIndex}
-                        console.log(colIndex)
+                    <div class="flex flex-nowrap flex-row">
+                      <div class="bg-secondary mx-1 grow">
+                        {rowIndex()}
                       </div>
                     </div>
-                  </div>
-                  
                 )}
               </For>
-              
             </div>
           )}
         </For>
       </div>
 
-      <div class="card fixed w-96 h-[98%] max-h-full right-2 bg-base-100 shadow-2xl overflow-y-scroll">
+      <div class="card fixed w-3/12 h-[98%] max-h-full right-2 bg-base-100 shadow-2xl overflow-y-scroll">
         <div class="card-body">
           <h2 class="card-title">View Width</h2>
           <input type="range" min="1" max="20" value={mapScale()} onChange={(e) => setMapScale(e.target.value)} class="range" />
@@ -60,9 +55,9 @@ const Editor = () => {
           </div>
           <button type="button" class="btn btn-primary" onClick={() => {
             const newMap = []
-            for (let i = 0; i < gridSizeX(); i++){
+            for (let i = 0; i < gridSizeY(); i++){
               let current = []
-              for (let j = 0; j < gridSizeY(); j++){
+              for (let j = 0; j < gridSizeX(); j++){
                 current.push(emptySection)
               }
               newMap.push(current)
