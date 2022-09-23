@@ -8,7 +8,8 @@ const Editor = () => {
   const [mapScale, setMapScale] = createSignal(8);
 
   const [currentSelected, setCurrentSelected] = createSignal(emptySection);
-
+  const [layer, setLayer] = createSignal(0)
+  const [layerCount, setLayerCount] = createSignal(1)
   const [gridSizeX, setGridSizeX] = createSignal(3);
   const [gridSizeY, setGridSizeY] = createSignal(4);
 
