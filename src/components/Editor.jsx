@@ -17,15 +17,19 @@ const Editor = () => {
   return (
     <div class="h-full w-full flex">
 
-      <div class="h-full w-9/12 gap-1 my-1">
+      <div class="h-full w-9/12 my-1">
         <For each={worldmap()}>
           {(row, rowIndex) => (
-            <div class="w-full">
+            <div class="flex flex-row my-1">
               <For each={row}>
                 {(col, colIndex) => (
-                    <div class="flex flex-nowrap flex-row">
-                      <div class="bg-secondary mx-1 grow">
-                        {rowIndex()}
+                    <div class="">
+                      <div class="bg-secondary mx-1 grow p-4" onClick={() => {
+                        console.log(currentSelected().code);
+                        
+                        // TODO: Grab the correct element from the world map and update it. This then should be almost completed for next development
+                      }}>
+                        {col.code}
                       </div>
                     </div>
                 )}
