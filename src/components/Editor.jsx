@@ -1,7 +1,7 @@
-import { createSignal, For } from "solid-js";
+import { createSignal, For, Index } from "solid-js";
 import config from './config.js'
 
-const emptySection = { code: -1, name: 'Empty' };
+const emptySection = { code: -1, name: 'Empty', color: 'bg-secondary' };
 
 const Editor = () => {
 
@@ -18,25 +18,31 @@ const Editor = () => {
     <div class="h-full w-full flex">
 
       <div class="h-full w-9/12 my-1">
-        <For each={worldmap()}>
+        <Index each={worldmap()}>
           {(row, rowIndex) => (
-            <div class="flex flex-row my-1">
-              <For each={row}>
+            <div class="flex flex-row my-1 text-center" classList={{ 'translate-x-10': rowIndex % 2 === 1}}>
+              <Index each={row()}>
                 {(col, colIndex) => (
-                    <div>
-                      <div class="bg-secondary mx-1 grow p-4 cursor-pointer" onClick={() => {
-                        console.log(currentSelected().code);
-                        
-                        // TODO: Grab the correct element from the world map and update it. This then should be almost completed for next development
+                  // TODO: Change the div color based on the selection. Probably grab all the assets from Dean's game to place in
+                      <div class="bg-secondary mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6" onClick={() => {
+                        let oldMap = []
+                        for (let i = 0; i < worldmap().length; i++) {
+                          oldMap.push([])
+                          for (let j = 0; j < worldmap()[0].length; j++) {
+                            oldMap[i].push(worldmap()[i][j])
+                          }
+                        }
+                        oldMap[rowIndex][colIndex] = currentSelected()
+                        setWorldMap(oldMap);
+
                       }}>
-                        {col.code}
+                        {col().name}
                       </div>
-                    </div>
                 )}
-              </For>
+              </Index>
             </div>
           )}
-        </For>
+        </Index>
       </div>
 
       <div class="card fixed w-3/12 h-[98%] max-h-full right-2 bg-base-100 shadow-2xl overflow-y-scroll">
