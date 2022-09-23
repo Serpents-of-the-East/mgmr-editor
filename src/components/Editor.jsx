@@ -1,7 +1,7 @@
 import { createSignal, For, Index } from "solid-js";
 import config from './config.js'
 
-const emptySection = { code: -1, name: 'Empty', color: 'bg-secondary' };
+const emptySection = { code: -1, name: 'Empty', color: '' };
 
 const Editor = () => {
 
@@ -24,7 +24,7 @@ const Editor = () => {
               <Index each={row()}>
                 {(col, colIndex) => (
                   // TODO: Change the div color based on the selection. Probably grab all the assets from Dean's game to place in
-                      <div class="bg-secondary mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6" onClick={() => {
+                      <div class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2" style={`background-color: ${col().color}`} onClick={() => {
                         let oldMap = []
                         for (let i = 0; i < worldmap().length; i++) {
                           oldMap.push([])
@@ -36,7 +36,7 @@ const Editor = () => {
                         setWorldMap(oldMap);
 
                       }}>
-                        {col().name}
+                        {col().name === 'Floor' ? '' : col().name}
                       </div>
                 )}
               </Index>
