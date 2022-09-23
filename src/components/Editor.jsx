@@ -23,8 +23,8 @@ const Editor = () => {
             <div class="flex flex-row my-1">
               <For each={row}>
                 {(col, colIndex) => (
-                    <div class="">
-                      <div class="bg-secondary mx-1 grow p-4" onClick={() => {
+                    <div>
+                      <div class="bg-secondary mx-1 grow p-4 cursor-pointer" onClick={() => {
                         console.log(currentSelected().code);
                         
                         // TODO: Grab the correct element from the world map and update it. This then should be almost completed for next development
