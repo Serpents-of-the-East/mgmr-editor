@@ -50,136 +50,136 @@ const config = {
       I: {
         code: 40,
         name: 'I',
-        color: '#808080'
+        color: '#0047AB'
       },
       Word: {
         code: 41,
         name: 'Word',
-        color: '#808080'
+        color: '#0047AB'
       },
       Border: {
         code: 42,
         name: 'Border',
-        color: '#808080'
+        color: '#0047AB'
       },
       Floor: {
         code: 43,
         name: 'Floor',
-        color: '#808080'
+        color: '#0047AB'
       },
       Purple: {
         code: 44,
         name: 'Purple',
-        color: '#808080'
+        color: '#0047AB'
       },
       Grey: {
         code: 45,
         name: 'Grey',
-        color: '#808080'
+        color: '#0047AB'
       },
       Green: {
         code: 46,
         name: 'Green',
-        color: '#808080'
+        color: '#0047AB'
       },
       Blue: {
         code: 47,
         name: 'Blue',
-        color: '#808080'
+        color: '#0047AB'
       },
       Red: {
         code: 48,
         name: 'Red',
-        color: '#808080'
+        color: '#0047AB'
       },
       Brown: {
         code: 49,
         name: 'Brown',
-        color: '#808080'
+        color: '#0047AB'
       },
       Yellow: {
         code: 50,
         name: 'Yellow',
-        color: '#808080'
+        color: '#0047AB'
       },
     },
     verbs: {
       is: {
         code: 60,
         name: 'is',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       am: {
         code: 61,
         name: 'am',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       can: {
         code: 62,
         name: 'can',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       and: {
         code: 63,
         name: 'and',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
     },
     properties: {
       Goal: {
         code: 76,
         name: 'Goal',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Climb: {
         code: 70,
         name: 'Climb',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Swim: {
         code: 71,
         name: 'Swim',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Burn: {
         code: 72,
         name: 'Burn',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Send: {
         code: 80,
         name: 'Send',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Stop: {
         code: 73,
         name: 'Stop',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Push: {
         code: 74,
         name: 'Push',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Pull: {
         code: 75,
         name: 'Pull',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Sink: {
         code: 77,
         name: 'Sink',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Chill: {
         code: 78,
         name: 'Chill',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
       Steep: {
         code: 79,
         name: 'Steep',
-        color: 'rgba(0, 0, 0, 0)'
+        color: '#0047AB'
       },
     },
 }
