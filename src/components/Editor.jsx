@@ -1,5 +1,6 @@
 import { createSignal, For, Index } from "solid-js";
 import config from './config.js'
+import { v4 as uuidV4 } from "uuid";
 
 const emptySection = { code: -1, name: 'Empty', color: '' };
 
@@ -15,6 +16,14 @@ const Editor = () => {
   const [layersWorldMap, setLayersWorldMap] = createSignal([[[emptySection]], [[emptySection]], [[emptySection]]])
   const [worldmap, setWorldMap] = createSignal([[emptySection]])
   const [isEditing, setIsEditing] = createSignal(true);
+  const [saveInfo, setSaveInfo] = createSignal({
+    title: '',
+    hint: '',
+    defaultXCenter: 0,
+    defaultYCenter: 0,
+    defaultZoom: 8,
+    goals: [[], [], [], [], [], [], [], [], []],
+  })
 
   return (
     <div class="h-full w-full flex">
@@ -93,46 +102,69 @@ const Editor = () => {
   
               setWorldMap(newMap);
               }} class="range"> </input>
+              <div class="w-full flex justify-between text-xs px-2">
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+              </div>
             <h2 class="card-title mt-8 mb-2">Title</h2>
-            <input type="text" placeholder="Enter Your Beautiful, Well Thought Out Title" id="title" name="title" class="input input-bordered"></input>
+            <input type="text" placeholder="Enter Your Beautiful, Well Thought Out Title" id="title" name="title" class="input input-bordered" value={saveInfo().title}  onChange={(e) => setSaveInfo(oldValues => ({...oldValues, title: e.target.value}))}></input>
   
   
             <h2 class="card-title mt-8 mb-2">Hint</h2>
-            <input type="text" placeholder="Enter Your Hint" id="hint" name="hint" class="input input-bordered"></input>
+            <input type="text" placeholder="Enter Your Hint" id="hint" name="hint" class="input input-bordered" value={saveInfo().hint}  onChange={(e) => setSaveInfo(oldValues => ({...oldValues, hint: e.target.value}))}></input>
   
             
   
             <div class="flex flex-row">
               <div>
               <h2 class="card-title mt-8 mb-2 ">Default X Center</h2>
-              <input type="text" placeholder="Enter X centering" id="X" name="X" class="input input-bordered w-[95%]"></input>
+              <input type="text" placeholder="Enter X centering" id="X" name="X" class="input input-bordered w-[95%]" value={saveInfo().defaultXCenter}  onChange={(e) => setSaveInfo(oldValues => ({...oldValues, defaultXCenter: e.target.value}))}></input>
               </div>
               <div>
   
               <h2 class="card-title mt-8 mb-2 ">Default Y Center</h2>
-              <input type="text" placeholder="Enter Y Centering" id="Y" name="Y" class="input input-bordered w-[95%]"></input>
+              <input type="text" placeholder="Enter Y Centering" id="Y" name="Y" class="input input-bordered w-[95%]" value={saveInfo().defaultYCenter}  onChange={(e) => setSaveInfo(oldValues => ({...oldValues, defaultYCenter: e.target.value}))}></input>
               </div>
             </div>
             
             <h2 class="card-title mt-8 mb-2">Default Zoom</h2>
-            <input type="text" placeholder="Default Zoom (# Cells Seen in Biggest Dimension)" id="zoom" name="zoom" class="input input-bordered"></input>
+            <input type="text" placeholder="Default Zoom (# Cells Seen in Biggest Dimension)" id="zoom" name="zoom" class="input input-bordered" value={saveInfo().defaultZoom}  onChange={(e) => setSaveInfo(oldValues => ({...oldValues, defaultZoom: e.target.value}))}></input>
 
             <h2 class="card-title mt-8 mb-2">Goals</h2>
             <For each={Object.keys(config.objects)}>
               {selection =>
               <div class="flex flex-row"> 
                 <div>
-                  <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value="0" class="input input-bordered w-[95%]"></input> 
+                  <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value="0" class="input input-bordered w-[95%]" onChange={(e) => setSaveInfo(oldValues => ({...oldValues,  }))}></input> 
                 </div>
                 <div class="w-[95%]">
-                  <button id={`object-${selection}`} class="btn w-[95%]" classList={{ 'btn-primary': currentSelected().code === config.objects[selection].code }}>{selection}</button> 
+                  <div id={`object-${selection}`} class="btn w-[95%]">{selection}</div> 
                 </div>
               </div>}
             </For>
 
 
             <div class="card-actions mt-4 w-[100%]">
-              <button class="btn btn-primary w-[100%]">Save</button>
+              <button class="btn btn-primary w-[100%]" onClick={() => {
+                let fileContent = "";
+                // TODO: Gather Text for the file
+
+                let fileName = saveInfo().title + '.puzzles';
+                
+                let uuid = uuidV4()
+                fileContent += (saveInfo().title + '\n' + saveInfo().hint + '\n' + `${uuid} \n`)
+
+
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent))
+                element.setAttribute('download', fileName)
+
+                element.style.display = 'none';
+                element.click();
+
+
+              }}>Save</button>
             </div>
           </div>
           </div>
@@ -167,6 +199,11 @@ const Editor = () => {
   
               setWorldMap(newMap);
               }} class="range"> </input>
+              <div class="w-full flex justify-between text-xs px-2">
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+              </div>
               
             <h2 class="card-title mt-8 mb-2">Map Size</h2>
             <div class="form-control">
