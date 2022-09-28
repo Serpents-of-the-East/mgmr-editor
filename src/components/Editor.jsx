@@ -22,8 +22,11 @@ const Editor = () => {
     defaultXCenter: 0,
     defaultYCenter: 0,
     defaultZoom: 8,
-    goals: [[], [], [], [], [], [], [], [], []],
-  })
+    goals: (new Array(Object.keys(config.objects).length).fill(0)),
+  });
+  const [names, setNames] = createSignal((Object.keys(config.objects)));
+  const [codes, setCodes] = createSignal(Object.values(config.objects)) 
+
 
   return (
     <div class="h-full w-full flex">
@@ -133,10 +136,15 @@ const Editor = () => {
 
             <h2 class="card-title mt-8 mb-2">Goals</h2>
             <For each={Object.keys(config.objects)}>
-              {selection =>
+              {(selection, index) =>
               <div class="flex flex-row"> 
                 <div>
-                  <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value="0" class="input input-bordered w-[95%]" onChange={(e) => setSaveInfo(oldValues => ({...oldValues,  }))}></input> 
+                  <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value="0" class="input input-bordered w-[95%]" onChange={(e) => {
+                    let goals = saveInfo().goals;
+                    goals[index()] = parseInt(e.target.value);
+                    setSaveInfo(oldValues => ({...oldValues,  goals}))}
+
+                  }></input> 
                 </div>
                 <div class="w-[95%]">
                   <div id={`object-${selection}`} class="btn w-[95%]">{selection}</div> 
@@ -148,12 +156,57 @@ const Editor = () => {
             <div class="card-actions mt-4 w-[100%]">
               <button class="btn btn-primary w-[100%]" onClick={() => {
                 let fileContent = "";
-                // TODO: Gather Text for the file
 
+                // Create the filename
                 let fileName = saveInfo().title + '.puzzles';
                 
+                // Create the UUID to append
                 let uuid = uuidV4()
-                fileContent += (saveInfo().title + '\n' + saveInfo().hint + '\n' + `${uuid} \n`)
+
+                // Add the goals
+                let goals = ""
+                for (let i = 0; i < saveInfo().goals.length; i++) {
+                  if (saveInfo().goals[i] !== 0) {
+                    goals += `[${saveInfo().goals[i]}:${codes()[i].code}]`
+                  }
+                }
+
+                // Get the information for the Center X, Center Y, and Zoom
+                let centerAndZoom = `${saveInfo().defaultXCenter}, ${saveInfo().defaultYCenter}, ${saveInfo().defaultZoom}`
+                
+                // Get Size of the Map
+                let sizeOfMap = `${layerCount()} x ${gridSizeX()} x ${gridSizeY()}`
+
+                // Get all layer information
+
+                let map = ""
+                // If empty, must be '  ', else will always be 2 characters long. If < 10 ' #', else #
+                for (let layer of layersWorldMap()) {
+                  let layerText = ""
+                  for (let row of layer) {
+                    let rowText = ""
+                    for (let element of row) {
+                      let elementText = ""
+                      if (element.code == -1) {
+                        elementText = "  "
+                      } else if (element.code < 10) {
+                        elementText = ` ${element.code}`
+                      } else {
+                        elementText = `${element.code}`
+                      } 
+                      rowText += `${elementText}`
+                    }
+                    layerText += rowText + '\n';
+                  }
+                  map += layerText + '\n'
+                  console.log(layerText)
+                }
+
+
+
+                // Concatenate all the information together
+                fileContent += (saveInfo().title + '\n' + saveInfo().hint + '\n' + `${uuid} \n` + `${goals}\n` + `${centerAndZoom}\n` +
+                `${sizeOfMap}\n` + `${map}`)
 
 
                 var element = document.createElement('a');
