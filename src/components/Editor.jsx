@@ -161,21 +161,21 @@ const Editor = () => {
                 let fileName = saveInfo().title + '.puzzles';
                 
                 // Create the UUID to append
-                let uuid = uuidV4()
+                let uuid = uuidV4();
 
                 // Add the goals
-                let goals = ""
+                let goals = "";
                 for (let i = 0; i < saveInfo().goals.length; i++) {
                   if (saveInfo().goals[i] !== 0) {
-                    goals += `[${saveInfo().goals[i]}:${codes()[i].code}]`
+                    goals += `[${saveInfo().goals[i]}:${codes()[i].code}]`;
                   }
                 }
 
                 // Get the information for the Center X, Center Y, and Zoom
-                let centerAndZoom = `${saveInfo().defaultXCenter}, ${saveInfo().defaultYCenter}, ${saveInfo().defaultZoom}`
+                let centerAndZoom = `${saveInfo().defaultXCenter}, ${saveInfo().defaultYCenter}, ${saveInfo().defaultZoom}`;
                 
                 // Get Size of the Map
-                let sizeOfMap = `${layerCount()} x ${gridSizeX()} x ${gridSizeY()}`
+                let sizeOfMap = `${layerCount()} x ${gridSizeX()} x ${gridSizeY()}`;
 
                 // Get all layer information
 
@@ -190,28 +190,28 @@ const Editor = () => {
                       if (element.code == -1) {
                         elementText = "  "
                       } else if (element.code < 10) {
-                        elementText = ` ${element.code}`
+                        elementText = ` ${element.code}`;
                       } else {
-                        elementText = `${element.code}`
+                        elementText = `${element.code}`;
                       } 
-                      rowText += `${elementText}`
+                      rowText += `${elementText}`;
                     }
                     layerText += rowText + '\n';
                   }
-                  map += layerText + '\n'
-                  console.log(layerText)
+                  map += layerText;
+                  
                 }
 
 
 
                 // Concatenate all the information together
                 fileContent += (saveInfo().title + '\n' + saveInfo().hint + '\n' + `${uuid} \n` + `${goals}\n` + `${centerAndZoom}\n` +
-                `${sizeOfMap}\n` + `${map}`)
+                `${sizeOfMap}\n` + `${map}`);
 
 
                 var element = document.createElement('a');
-                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent))
-                element.setAttribute('download', fileName)
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent));
+                element.setAttribute('download', fileName);
 
                 element.style.display = 'none';
                 element.click();
