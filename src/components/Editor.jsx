@@ -133,8 +133,14 @@ const Editor = () => {
       for (let y = 6; y < 6 + yParsed; y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
-          const currentNumber = Number.parseInt(textContentLines[y].substr(x * 2, 2));
-          currentLine.push(reverseLookup[currentNumber]);
+          const currentString = textContentLines[y].substr(x * 2, 2);
+          if (!currentString.replaceAll(' ', '')) {
+            currentLine.push({ code: -1, name: 'Empty', color: '' })
+          }
+          else {
+            const currentNumber = Number.parseInt(currentString);
+            currentLine.push(reverseLookup[currentNumber]);
+          }
         }
         layer0Map.push(currentLine);
       }
@@ -144,8 +150,14 @@ const Editor = () => {
       for (let y = 6 + yParsed; y < 6 + (yParsed * 2); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
-          const currentNumber = Number.parseInt(textContentLines[y].substr(x * 2, 2));
-          currentLine.push(reverseLookup[currentNumber]);
+          const currentString = textContentLines[y].substr(x * 2, 2);
+          if (!currentString.replaceAll(' ', '')) {
+            currentLine.push({ code: -1, name: 'Empty', color: '' })
+          }
+          else {
+            const currentNumber = Number.parseInt(currentString);
+            currentLine.push(reverseLookup[currentNumber]);
+          }
         }
         layer1Map.push(currentLine);
       }
@@ -155,11 +167,19 @@ const Editor = () => {
       for (let y = 6 + (yParsed * 2); y < 6 + (yParsed * 3); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
-          const currentNumber = Number.parseInt(textContentLines[y].substr(x * 2, 2));
-          currentLine.push(reverseLookup[currentNumber]);
+          const currentString = textContentLines[y].substr(x * 2, 2);
+          if (!currentString.replaceAll(' ', '')) {
+            currentLine.push({ code: -1, name: 'Empty', color: '' })
+          }
+          else {
+            const currentNumber = Number.parseInt(currentString);
+            currentLine.push(reverseLookup[currentNumber]);
+          }
         }
         layer2Map.push(currentLine);
       }
+
+      console.log(layer0Map);
 
       setSaveInfo(old => ({
         ...old,
