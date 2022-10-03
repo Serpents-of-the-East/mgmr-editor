@@ -107,11 +107,25 @@ const Editor = () => {
       const textContentLines = event.target.result.split("\n");
       const title = textContentLines[0];
       const hint = textContentLines[1];
-      const [layerCount, sizeX, sizeY] = textContentLines[5].replace(' ', '').split('x');
-      const [xCenter, yCenter, zoom] = textContentLines[4].replace(' ', '').split(',');
+      const [layerCount, sizeX, sizeY] = textContentLines[5].replaceAll(' ', '').split('x');
+      const [xCenter, yCenter, zoom] = textContentLines[4].replaceAll(' ', '').split(',');
 
       const xParsed = Number.parseInt(sizeX);
       const yParsed = Number.parseInt(sizeY);
+
+      setGridSizeX(xParsed);
+      setGridSizeY(yParsed);
+
+      const goalStrings = textContentLines[3].replaceAll('[', ']').split(']').filter(value => value);
+
+      const parsedGoals = (new Array(Object.keys(config.objects).length).fill(0));
+
+      goalStrings.forEach(goal => {
+        const [count, id] = goal.split(':').map(num => Number.parseInt(num, 10));
+        parsedGoals[id - 1] = count;
+      });
+
+      setSaveInfo(lastValue => ({ ...lastValue, goals: parsedGoals }));
 
       // { code: -1, name: 'Empty', color: '' }
       // Load layer 0
@@ -136,7 +150,7 @@ const Editor = () => {
         layer1Map.push(currentLine);
       }
 
-      // Load layer 1
+      // Load layer 2
       const layer2Map = []
       for (let y = 6 + (yParsed * 2); y < 6 + (yParsed * 3); y++) {
         const currentLine = [];
@@ -147,14 +161,14 @@ const Editor = () => {
         layer2Map.push(currentLine);
       }
 
-      setSaveInfo({
+      setSaveInfo(old => ({
+        ...old,
         title,
         hint,
         defaultXCenter: xCenter,
         defaultYCenter: yCenter,
         defaultZoom: zoom,
-        goals: (new Array(Object.keys(config.objects).length).fill(0)),
-      });
+      }));
 
       setLayer(0);
       let newMap = []
@@ -166,13 +180,14 @@ const Editor = () => {
       }
       setWorldMap(newMap);
       setLayersWorldMap([layer0Map, layer1Map, layer2Map]);
+
+
     }
     reader.readAsText(loadedFile()); // you could also read images and other binaries
   }
 
   return (
     <div class="h-full w-full flex">
-
       <div class="h-full w-9/12 my-1">
         <Index each={worldmap()}>
           {(row, rowIndex) => (
@@ -278,7 +293,7 @@ const Editor = () => {
               {(selection, index) =>
                 <div class="flex flex-row">
                   <div>
-                    <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value="0" class="input input-bordered w-[95%]" onChange={(e) => {
+                    <input type="number" placeholder="Enter number to reach this type (i.e. 2 to blue)" value={saveInfo().goals[index()]} class="input input-bordered w-[95%]" onChange={(e) => {
                       let goals = saveInfo().goals;
                       goals[index()] = parseInt(e.target.value);
                       setSaveInfo(oldValues => ({ ...oldValues, goals }))
