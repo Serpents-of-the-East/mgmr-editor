@@ -64,11 +64,9 @@ const Editor = () => {
         let rowText = ""
         for (let element of row) {
           let elementText = ""
-          // console.log(element)
           if (!element) {
-            // console.log(row)
-          }
-          if (element.code == -1) {
+            elementText = "  "
+          } else if (element.code == -1) {
             elementText = "  "
           } else if (element.code < 10) {
             elementText = ` ${element.code}`;
@@ -82,8 +80,6 @@ const Editor = () => {
       map += layerText;
 
     }
-
-
 
     // Concatenate all the information together
     fileContent += (saveInfo().title + '\n' + saveInfo().hint + '\n' + `${uuid} \n` + `${goals}\n` + `${centerAndZoom}\n` +
