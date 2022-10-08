@@ -59,11 +59,15 @@ const Editor = () => {
     // If empty, must be '  ', else will always be 2 characters long. If < 10 ' #', else #
     for (let layer of layersWorldMap()) {
       let layerText = ""
+      console.log(layer)
       for (let row of layer) {
         let rowText = ""
         for (let element of row) {
           let elementText = ""
-          console.log(element)
+          // console.log(element)
+          if (!element) {
+            // console.log(row)
+          }
           if (element.code == -1) {
             elementText = "  "
           } else if (element.code < 10) {
@@ -131,7 +135,7 @@ const Editor = () => {
       // { code: -1, name: 'Empty', color: '' }
       // Load layer 0
       const layer0Map = []
-      for (let y = 6; y < 6 + yParsed - 1; y++) {
+      for (let y = 6; y < 6 + gridSizeY(); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
           const currentString = textContentLines[y].substr(x * 2, 2);
@@ -148,7 +152,9 @@ const Editor = () => {
 
       // Load layer 1
       const layer1Map = []
-      for (let y = 6 + yParsed; y < 6 + (yParsed * 2) - 1; y++) {
+      // console.log(6 + gridSizeY())
+      // console.log(6 + gridSizeY() * 2)
+      for (let y = 6 + gridSizeY(); y < 6 + (gridSizeY() * 2); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
           const currentString = textContentLines[y].substr(x * 2, 2);
@@ -165,7 +171,7 @@ const Editor = () => {
 
       // Load layer 2
       const layer2Map = []
-      for (let y = 6 + (yParsed * 2); y < 6 + (yParsed * 3); y++) {
+      for (let y = 6 + (gridSizeY() * 2); y < 6 + (gridSizeY() * 3); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
           const currentString = textContentLines[y].substr(x * 2, 2);
@@ -180,7 +186,7 @@ const Editor = () => {
         layer2Map.push(currentLine);
       }
 
-      console.log(layer0Map);
+      // console.log(layer0Map);
 
       setSaveInfo(old => ({
         ...old,
@@ -197,9 +203,14 @@ const Editor = () => {
         newMap.push([]);
         for (let j = 0; j < layer0Map[0].length; j++) {
           newMap[i].push(layer0Map[i][j])
+          if (!layer0Map[i][j]) {
+            console.log("USSUE HERE")
+          }
         }
       }
       setWorldMap(newMap);
+
+      // console.log(layer0Map)
       setLayersWorldMap([layer0Map, layer1Map, layer2Map]);
 
 
