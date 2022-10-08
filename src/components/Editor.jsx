@@ -63,6 +63,7 @@ const Editor = () => {
         let rowText = ""
         for (let element of row) {
           let elementText = ""
+          console.log(element)
           if (element.code == -1) {
             elementText = "  "
           } else if (element.code < 10) {
@@ -130,7 +131,7 @@ const Editor = () => {
       // { code: -1, name: 'Empty', color: '' }
       // Load layer 0
       const layer0Map = []
-      for (let y = 6; y < 6 + yParsed; y++) {
+      for (let y = 6; y < 6 + yParsed - 1; y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
           const currentString = textContentLines[y].substr(x * 2, 2);
@@ -147,7 +148,7 @@ const Editor = () => {
 
       // Load layer 1
       const layer1Map = []
-      for (let y = 6 + yParsed; y < 6 + (yParsed * 2); y++) {
+      for (let y = 6 + yParsed; y < 6 + (yParsed * 2) - 1; y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
           const currentString = textContentLines[y].substr(x * 2, 2);
