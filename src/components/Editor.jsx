@@ -64,7 +64,7 @@ const Editor = () => {
         let rowText = ""
         for (let element of row) {
           let elementText = ""
-          if (!element) {
+          if (!element) { // TODO: FIX THIS! THIS IS ONLY A SLIGHT FIX WHICH MAKES LAYER 3 UNUSABLE! THE LOAD BRINGS IT IN AS AN UNDEFINED!
             elementText = "  "
           } else if (element.code == -1) {
             elementText = "  "
@@ -182,8 +182,6 @@ const Editor = () => {
         layer2Map.push(currentLine);
       }
 
-      // console.log(layer0Map);
-
       setSaveInfo(old => ({
         ...old,
         title,
@@ -206,7 +204,6 @@ const Editor = () => {
       }
       setWorldMap(newMap);
 
-      // console.log(layer0Map)
       setLayersWorldMap([layer0Map, layer1Map, layer2Map]);
 
 
