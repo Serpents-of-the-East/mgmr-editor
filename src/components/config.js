@@ -45,6 +45,21 @@ const config = {
       name: 'Yellow',
       color: '#FFFF00'
     },
+    Grass: {
+      code: 10,
+      name: 'Grass',
+      color: '#009A17'
+    },
+    Flower: {
+      code: 11,
+      name: 'Flower',
+      color: '#483d8b'
+    },
+    Word: {
+      code: 41,
+      name: 'Word',
+      color: '#483d8b'
+    },
   },
   objectsText: {
     I: {
@@ -102,6 +117,17 @@ const config = {
       name: 'Yellow',
       color: '#0047AB'
     },
+    Grass: {
+      code: 51,
+      name: 'Grass',
+      color: '#0047AB'
+    },
+    Flower: {
+      code: 52,
+      name: 'Flower',
+      color: '#0047AB'
+    },
+
   },
   verbs: {
     is: {
