@@ -55,6 +55,11 @@ const config = {
       name: 'Flower',
       color: '#483d8b'
     },
+    Black: {
+      code: 12,
+      name: 'Black',
+      color: '#333333'
+    },
     Word: {
       code: 41,
       name: 'Word',
@@ -126,6 +131,11 @@ const config = {
       code: 52,
       name: 'Flower',
       color: '#0047AB'
+    },
+    Black: {
+      code: 53,
+      name: 'Black',
+      color: '#333333'
     },
 
   },
