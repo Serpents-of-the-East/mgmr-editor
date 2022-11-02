@@ -135,7 +135,7 @@ const config = {
     Black: {
       code: 53,
       name: 'Black',
-      color: '#333333'
+      color: '#0047AB'
     },
 
   },
