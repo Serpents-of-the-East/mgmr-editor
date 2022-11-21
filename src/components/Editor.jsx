@@ -1,8 +1,16 @@
-import { createSignal, For, Index, Show } from "solid-js";
+import { createSignal, For, Index, onMount, Show } from "solid-js";
 import config, { reverseLookup } from './config.js'
 import { v4 as uuidV4 } from "uuid";
 
 const emptySection = { code: -1, name: 'Empty', color: '' };
+
+const hexToRGBA = (hex, opacity) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
 
 const Editor = () => {
 
@@ -29,6 +37,43 @@ const Editor = () => {
 
   const [loadedFile, setLoadedFile] = createSignal(null);
 
+  const [layerTransparency, setLayerTransparency] = createSignal(0.5);
+
+  const getBackgroundColor = (rowIndex, colIndex) => {
+    let color = worldmap()[rowIndex][colIndex].color;
+    // If this one is filled already, we should do this one
+    if (color) {
+      return color;
+    }
+
+    for (let i = 2; i >= 0; i--){
+      // Top down approach, top-most layer should appear if the current doesn't have one
+      let currentRow = layersWorldMap()[i][rowIndex];
+
+      if (!currentRow) {
+        continue;
+      }
+
+      color = currentRow[colIndex]?.color;
+      if (color) {
+        return hexToRGBA(color, layerTransparency());
+      }
+    }
+
+    return '';
+  }
+
+  onMount(() => {
+    let colorTheme = localStorage.getItem('editor-color') ?? 'night';
+    const html = document.querySelector('html');
+    html.setAttribute('data-theme', colorTheme);
+  })
+
+  const setColorTheme = (e) => {
+    const html = document.querySelector('html');
+    html.setAttribute('data-theme', e.target.value);
+    localStorage.setItem('editor-color', e.target.value);
+  }
 
   const saveFile = () => {
     let fileContent = "";
@@ -59,7 +104,6 @@ const Editor = () => {
     // If empty, must be '  ', else will always be 2 characters long. If < 10 ' #', else #
     for (let layer of layersWorldMap()) {
       let layerText = ""
-      console.log(layer)
       for (let row of layer) {
         let rowText = ""
         for (let element of row) {
@@ -148,8 +192,6 @@ const Editor = () => {
 
       // Load layer 1
       const layer1Map = []
-      // console.log(6 + gridSizeY())
-      // console.log(6 + gridSizeY() * 2)
       for (let y = 6 + gridSizeY(); y < 6 + (gridSizeY() * 2); y++) {
         const currentLine = [];
         for (let x = 0; x < textContentLines[y].length / 2; x++) {
@@ -198,7 +240,6 @@ const Editor = () => {
         for (let j = 0; j < layer0Map[0].length; j++) {
           newMap[i].push(layer0Map[i][j])
           if (!layer0Map[i][j]) {
-            console.log("USSUE HERE")
           }
         }
       }
@@ -211,6 +252,14 @@ const Editor = () => {
     reader.readAsText(loadedFile()); // you could also read images and other binaries
   }
 
+  const getName = (col, rowIndex, colIndex) => {
+    if (!col()){
+      return "BROKEN"
+    }
+
+    else return col().name === 'Floor' ? '' : col().name;
+  }
+
   return (
     <div class="h-full w-full flex">
       <div class="h-full w-9/12 my-1">
@@ -220,11 +269,11 @@ const Editor = () => {
               <Index each={row()}>
                 {(col, colIndex) => (
                   // TODO: Change the div color based on the selection. Probably grab all the assets from Dean's game to place in
-                  <div class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2" style={`background-color: ${col().color}`} onClick={() => {
+                  <div class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2" style={`background-color: ${getBackgroundColor(rowIndex, colIndex)}`} onClick={() => {
                     let oldMap = []
                     for (let i = 0; i < worldmap().length; i++) {
                       oldMap.push([])
-                      for (let j = 0; j < worldmap()[0].length; j++) {
+                      for (let j = 0; j < worldmap()[i].length; j++) {
                         oldMap[i].push(worldmap()[i][j])
                       }
                     }
@@ -249,7 +298,9 @@ const Editor = () => {
                     setLayersWorldMap(transferMap);
 
                   }}>
-                    {col().name === 'Floor' ? '' : col().name}
+                    <div classList={{ "text-black": col()?.code === 13 }} class="font-bold">
+                    {getName(col, rowIndex, colIndex)}
+                    </div>
                   </div>
                 )}
               </Index>
@@ -269,12 +320,29 @@ const Editor = () => {
               <button type="button" class="btn btn-primary flex-auto" onClick={() => setIsEditing(false)}>Save Menu</button>
             </div>
             <label for="my-modal" class="btn modal-button">Load from File</label>
+
+            <div class="form-control w-full max-w-xs">
+              <label class="label">
+                <span class="label-text">Select editor color theme</span>
+              </label>
+              <select class="select select-bordered" onChange={setColorTheme}>
+                <option selected>night</option>
+                <option>light</option>
+                <option>synthwave</option>
+                <option>retro</option>
+                <option>forest</option>
+                <option>aqua</option>
+                <option>black</option>
+                <option>dracula</option>
+                <option>business</option>
+                <option>coffee</option>
+              </select>
+            </div>
+            
             <h2 class="card-title">Layer {layer} Selected</h2>
             <input type="range" min="0" max="2" value={layer()} onChange={(e) => {
               setLayer(e.target.value);
-
-              let newMap = []
-
+              let newMap = [];
               for (let i = 0; i < layersWorldMap()[e.target.value].length; i++) {
                 newMap.push([]);
                 for (let j = 0; j < layersWorldMap()[e.target.value][0].length; j++) {
@@ -347,6 +415,25 @@ const Editor = () => {
               <button type="button" class="btn btn-primary flex-auto" onClick={() => setIsEditing(false)}>Save Menu</button>
             </div>
             <label for="my-modal" class="btn modal-button">Load from File</label>
+            
+            <div class="form-control w-full max-w-xs">
+              <label class="label">
+                <span class="label-text">Select editor color theme</span>
+              </label>
+              <select class="select select-bordered" onChange={setColorTheme}>
+                <option selected>night</option>
+                <option>light</option>
+                <option>synthwave</option>
+                <option>retro</option>
+                <option>forest</option>
+                <option>aqua</option>
+                <option>black</option>
+                <option>dracula</option>
+                <option>business</option>
+                <option>coffee</option>
+              </select>
+            </div>
+
             <h2 class="card-title">Layer {layer} Selected</h2>
             <input type="range" min="0" max="2" value={layer()} onChange={(e) => {
               setLayer(e.target.value);
@@ -367,6 +454,12 @@ const Editor = () => {
               <span>|</span>
               <span>|</span>
             </div>
+            
+            <h2 class="card-title">Alternate Layer Opacity</h2>
+            <h3>The current selected layer takes priority, showing the others only if it is empty. It will show the first layer with an item in the position, top to bottom</h3>
+            <input type="range" min="0" max="100" value={layerTransparency() * 100} class="range" onChange={(e) => {
+              setLayerTransparency(e.target.value / 100)
+            }} />
 
             <h2 class="card-title mt-8 mb-2">Map Size</h2>
             <div class="form-control">

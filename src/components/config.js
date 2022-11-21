@@ -60,6 +60,11 @@ const config = {
       name: 'Black',
       color: '#333333'
     },
+    White: {
+      code: 13,
+      name: 'White',
+      color: '#ffffff'
+    },
     Word: {
       code: 41,
       name: 'Word',
@@ -137,7 +142,11 @@ const config = {
       name: 'Black',
       color: '#0047AB'
     },
-
+    White: {
+      code: 54,
+      name: 'White',
+      color: '#0047AB'
+    },
   },
   verbs: {
     is: {
