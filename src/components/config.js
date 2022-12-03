@@ -227,6 +227,48 @@ const config = {
       color: '#0047AB'
     },
   },
+  b_colors: {
+    b_white: {
+      code: 13,
+      name: 'B_White',
+      color: '#ffffff'
+    },
+    b_purple: {
+      code: 14,
+      name: 'B_Purple',
+      color: '#A020F0'
+    },
+    b_grey: {
+      code: 15,
+      name: 'B_Grey',
+      color: '#808080'
+    },
+    b_green: {
+      code: 16,
+      name: 'B_Green',
+      color: '#00FF00'
+    },
+    b_blue: {
+      code: 17,
+      name: 'B_Blue',
+      color: '#0000FF'
+    },
+    b_red: {
+      code: 18,
+      name: 'B_Red',
+      color: '#FF0000'
+    },
+    b_brown: {
+      code: 19,
+      name: 'B_Brown',
+      color: '#964B00'
+    },
+    b_yellow: {
+      code: 20,
+      name: 'B_Yellow',
+      color: '#FFFF00'
+    },
+  },
 }
 
 export const reverseLookup = (() => {

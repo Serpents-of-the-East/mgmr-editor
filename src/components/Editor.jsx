@@ -508,6 +508,10 @@ const Editor = () => {
             <For each={Object.keys(config.properties)}>
               {selection => <button id={`prop-${selection}`} class="btn" classList={{ 'btn-primary': currentSelected().code === config.properties[selection].code }} onClick={() => setCurrentSelected(config.properties[selection])}>{selection}</button>}
             </For>
+            <h2 class="card-title mt-8">Background Colors</h2>
+            <For each={Object.keys(config.b_colors)}>
+              {selection => <button id={`verb-${selection}`} class="btn" classList={{ 'btn-accent': currentSelected().code === config.b_colors[selection].code }} onClick={() => setCurrentSelected(config.b_colors[selection])}>{selection}</button>}
+            </For>
             <p></p>
           </div>
         </div>
