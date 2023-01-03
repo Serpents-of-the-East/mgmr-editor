@@ -256,8 +256,8 @@ const Editor = () => {
     if (!col()){
       return "BROKEN"
     }
-
-    else return col().name === 'Floor' ? '' : col().name;
+    else return col().code === 2 ? '' : col().name;
+    
   }
 
   return (

@@ -1,8 +1,8 @@
 const config = {
   objects: {
-    Border: {
+    Wall: {
       code: 1,
-      name: 'Border',
+      name: 'Wall',
       color: '#000000'
     },
     Floor: {
@@ -82,9 +82,9 @@ const config = {
       name: 'Word',
       color: '#0047AB'
     },
-    Border: {
+    Wall: {
       code: 42,
-      name: 'Border',
+      name: 'Wall',
       color: '#0047AB'
     },
     Floor: {
