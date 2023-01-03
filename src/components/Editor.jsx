@@ -32,6 +32,9 @@ const Editor = () => {
     defaultZoom: 8,
     goals: (new Array(Object.keys(config.objects).length).fill(0)),
   });
+  const [mouseDown, setMouseDown] = createSignal(false);
+
+
   const [names, setNames] = createSignal((Object.keys(config.objects)));
   const [codes, setCodes] = createSignal(Object.values(config.objects));
 
@@ -67,6 +70,8 @@ const Editor = () => {
     let colorTheme = localStorage.getItem('editor-color') ?? 'night';
     const html = document.querySelector('html');
     html.setAttribute('data-theme', colorTheme);
+    document.body.onmousedown = () => {console.log("Down"); setMouseDown(true)}
+    document.body.onmouseup = () => {console.log("Up"); setMouseDown(false)}
   })
 
   const setColorTheme = (e) => {
@@ -257,7 +262,36 @@ const Editor = () => {
       return "BROKEN"
     }
     else return col().code === 2 ? '' : col().name;
-    
+  }
+
+  const changeMap = (rowIndex, colIndex) => {
+    console.log()
+    let oldMap = []
+    for (let i = 0; i < worldmap().length; i++) {
+      oldMap.push([])
+      for (let j = 0; j < worldmap()[i].length; j++) {
+        oldMap[i].push(worldmap()[i][j])
+      }
+    }
+
+    oldMap[rowIndex][colIndex] = currentSelected();
+    setWorldMap(oldMap);
+
+    let transferMap = [];
+
+    for (let k = 0; k < layerCount(); k++) {
+      transferMap.push([]);
+      for (let i = 0; i < gridSizeY(); i++) {
+        transferMap.at(k).push([])
+        for (let j = 0; j < gridSizeX(); j++) {
+          transferMap[k][i].push(layersWorldMap()[k][i][j]);
+        }
+      }
+    }
+
+    transferMap[layer()] = oldMap;
+
+    setLayersWorldMap(transferMap);
   }
 
   return (
@@ -265,39 +299,24 @@ const Editor = () => {
       <div class="h-full w-9/12 my-1">
         <Index each={worldmap()}>
           {(row, rowIndex) => (
-            <div class="flex flex-row my-1 text-center" classList={{ 'translate-x-10': rowIndex % 2 === 1 }}>
+            <div class="flex flex-row my-1 text-center select-none" classList={{ 'translate-x-10': rowIndex % 2 === 1 }}>
               <Index each={row()}>
                 {(col, colIndex) => (
-                  // TODO: Change the div color based on the selection. Probably grab all the assets from Dean's game to place in
-                  <div class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2" style={`background-color: ${getBackgroundColor(rowIndex, colIndex)}`} onClick={() => {
-                    let oldMap = []
-                    for (let i = 0; i < worldmap().length; i++) {
-                      oldMap.push([])
-                      for (let j = 0; j < worldmap()[i].length; j++) {
-                        oldMap[i].push(worldmap()[i][j])
-                      }
+                  <div 
+                  class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2"
+                  style={`background-color: ${getBackgroundColor(rowIndex, colIndex)}`} 
+                  onClick={() => changeMap(rowIndex, colIndex)}
+                  onMouseEnter={() => {
+                    if (mouseDown()) {
+                      changeMap(rowIndex, colIndex)
                     }
-
-                    oldMap[rowIndex][colIndex] = currentSelected();
-                    setWorldMap(oldMap);
-
-                    let transferMap = [];
-
-                    for (let k = 0; k < layerCount(); k++) {
-                      transferMap.push([]);
-                      for (let i = 0; i < gridSizeY(); i++) {
-                        transferMap.at(k).push([])
-                        for (let j = 0; j < gridSizeX(); j++) {
-                          transferMap[k][i].push(layersWorldMap()[k][i][j]);
-                        }
-                      }
+                  }}
+                  onMouseLeave={() => {
+                    if (mouseDown()) {
+                      changeMap(rowIndex, colIndex)
                     }
-
-                    transferMap[layer()] = oldMap;
-
-                    setLayersWorldMap(transferMap);
-
-                  }}>
+                  }}
+                  >
                     <div classList={{ "text-black": col()?.code === 13 }} class="font-bold">
                     {getName(col, rowIndex, colIndex)}
                     </div>
