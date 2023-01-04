@@ -39,8 +39,10 @@ const Editor = () => {
   const [codes, setCodes] = createSignal(Object.values(config.objects));
 
   const [loadedFile, setLoadedFile] = createSignal(null);
-
+  const [changed, setChanged] = createSignal(false);
   const [layerTransparency, setLayerTransparency] = createSignal(0.5);
+  const [savedStates, setSavedStates] = createSignal([])
+  const [lastWorldMap, setLastWorldMap] = createSignal([[[emptySection]], [[emptySection]], [[emptySection]]]);
 
   const getBackgroundColor = (rowIndex, colIndex) => {
     let color = worldmap()[rowIndex][colIndex].color;
@@ -66,12 +68,111 @@ const Editor = () => {
     return '';
   }
 
+  const saveMaps = () => {
+    if (changed()) {
+      setChanged(false);
+      console.log(`Saved States: ${savedStates().length}`)
+
+      if (savedStates().length > 10) {
+        let savedStatesTemp = savedStates();
+        savedStatesTemp.pop();
+        setSavedStates(savedStatesTemp);
+      }
+
+      let savedStatesTemp = savedStates();
+      savedStatesTemp.push(lastWorldMap());
+      setSavedStates(savedStatesTemp);
+    }
+
+  }
+
   onMount(() => {
     let colorTheme = localStorage.getItem('editor-color') ?? 'night';
     const html = document.querySelector('html');
     html.setAttribute('data-theme', colorTheme);
-    document.body.onmousedown = () => {console.log("Down"); setMouseDown(true)}
-    document.body.onmouseup = () => {console.log("Up"); setMouseDown(false)}
+    document.body.onmousedown = () => {
+      setMouseDown(true);
+    }
+    document.body.onmouseup = () => {
+      setMouseDown(false);
+      console.log("Calling save maps")
+      saveMaps();
+    }
+
+    
+    document.addEventListener('keydown', e => {
+      switch(e.key) {
+        case "u":
+          
+          if (savedStates().length > 0) {
+            let tempPreviousWorldState = savedStates();
+            let previousMap = tempPreviousWorldState.pop(0)
+
+            setWorldMap(previousMap[layer()]);
+
+            let transferMap = [];
+
+            for (let k = 0; k < layerCount(); k++) {
+              transferMap.push([]);
+              for (let i = 0; i < gridSizeY(); i++) {
+                transferMap.at(k).push([])
+                for (let j = 0; j < gridSizeX(); j++) {
+                  transferMap[k][i].push(savedStates()[0][k][i][j]);
+                }
+              }
+            }
+            
+            if (tempPreviousWorldState.length > 0) {
+              setLastWorldMap[tempPreviousWorldState[0]]
+            } else {
+              setLastWorldMap(previousMap);
+            }
+            tempPreviousWorldState.push(transferMap);
+            setLayersWorldMap(transferMap);
+            setSavedStates(tempPreviousWorldState);
+
+          }
+          break;
+        case "Tab":
+          setIsEditing(!isEditing());
+          console.log(isEditing());
+          break;
+        case "e":
+          setCurrentSelected({ code: -1, name: 'Empty', color: '#000000' });
+          break;
+        case "w":
+          setCurrentSelected(config.objects.Wall);
+          break;
+        case "f":
+          setCurrentSelected(config.objects.Floor);
+          break;
+
+        case "i":
+          setCurrentSelected(config.objectsText.I);
+          break;
+      
+        case "s":
+          setCurrentSelected(config.verbs.is);
+          break;
+
+        case "a":
+          setCurrentSelected(config.verbs.am);        
+          break;
+        
+        case "c":
+          setCurrentSelected(config.verbs.can);        
+          break;
+        
+        case "d":
+          setCurrentSelected(config.verbs.and);        
+          break;
+
+        default:
+          break;
+      }
+      console.log(e.key)
+    })
+    
   })
 
   const setColorTheme = (e) => {
@@ -113,7 +214,7 @@ const Editor = () => {
         let rowText = ""
         for (let element of row) {
           let elementText = ""
-          if (!element) { // TODO: FIX THIS! THIS IS ONLY A SLIGHT FIX WHICH MAKES LAYER 3 UNUSABLE! THE LOAD BRINGS IT IN AS AN UNDEFINED!
+          if (!element) { 
             elementText = "  "
           } else if (element.code == -1) {
             elementText = "  "
@@ -141,9 +242,6 @@ const Editor = () => {
 
     element.style.display = 'none';
     element.click();
-
-
-
   }
 
   const loadFile = () => {
@@ -265,7 +363,6 @@ const Editor = () => {
   }
 
   const changeMap = (rowIndex, colIndex) => {
-    console.log()
     let oldMap = []
     for (let i = 0; i < worldmap().length; i++) {
       oldMap.push([])
@@ -274,8 +371,13 @@ const Editor = () => {
       }
     }
 
+    if (worldmap()[rowIndex][colIndex].code !== currentSelected().code) {
+      setChanged(true)
+    }
+
     oldMap[rowIndex][colIndex] = currentSelected();
     setWorldMap(oldMap);
+    
 
     let transferMap = [];
 
@@ -289,10 +391,11 @@ const Editor = () => {
       }
     }
 
+    setLastWorldMap(transferMap);
     transferMap[layer()] = oldMap;
 
     setLayersWorldMap(transferMap);
-  }
+  };
 
   return (
     <div class="h-full w-full flex">
@@ -305,7 +408,9 @@ const Editor = () => {
                   <div 
                   class="mx-1 cursor-pointer h-20 w-20 overflow-hidden resize-none pt-6 border-2"
                   style={`background-color: ${getBackgroundColor(rowIndex, colIndex)}`} 
-                  onClick={() => changeMap(rowIndex, colIndex)}
+                  onClick={() => {
+                    changeMap(rowIndex, colIndex); 
+                  }}
                   onMouseEnter={() => {
                     if (mouseDown()) {
                       changeMap(rowIndex, colIndex)
