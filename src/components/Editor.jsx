@@ -596,8 +596,8 @@ const Editor = () => {
               </label>
             </div>
             <button type="button" class="btn btn-primary" onClick={() => {
-              console.log(layersWorldMap()[0].length) // y
-              console.log(layersWorldMap()[0][0].length) // x
+              // console.log(layersWorldMap()[0].length) // y
+              // console.log(layersWorldMap()[0][0].length) // x
 
               let oldY = layersWorldMap()[0].length;
               let oldX = layersWorldMap()[0][0].length;
@@ -607,7 +607,10 @@ const Editor = () => {
 
               let columnsAdded = newX - oldX;
               let rowsAdded = newY - oldY;
-              
+
+              let unevenColumns = Math.round(columnsAdded / 2);
+              let unevenRows = Math.round(rowsAdded / 2);
+
               const newMap = []
               
               for (let k = 0; k < layerCount(); k++) {
@@ -619,6 +622,18 @@ const Editor = () => {
                   }
                 }
               }
+
+              if (newX >= oldX && newY >= oldY) {
+                for (let k = 0; k < layerCount(); k++) {
+                  for (let i = unevenRows; i < oldY + unevenRows; i++) {
+                    for (let j = unevenColumns; j < oldX + unevenColumns; j++) {
+                      newMap[k][i][j] = layersWorldMap()[k][i - unevenRows][j - unevenColumns];
+                    }
+                  }
+                }
+              }
+             
+
               setWorldMap(newMap[layer()])
               setLayersWorldMap(newMap);
               setLastWorldMap(newMap);
