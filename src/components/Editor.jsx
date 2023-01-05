@@ -21,8 +21,7 @@ const Editor = () => {
   const [layerCount, setLayerCount] = createSignal(3)
   const [gridSizeX, setGridSizeX] = createSignal(3);
   const [gridSizeY, setGridSizeY] = createSignal(4);
-  const [layersWorldMap, setLayersWorldMap] = createSignal([[[emptySection]], [[emptySection]], [[emptySection]]])
-  const [worldmap, setWorldMap] = createSignal([[emptySection]])
+  const [worldmap, setWorldMap] = createSignal([[emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection]])
   const [isEditing, setIsEditing] = createSignal(true);
   const [saveInfo, setSaveInfo] = createSignal({
     title: '',
@@ -33,7 +32,7 @@ const Editor = () => {
     goals: (new Array(Object.keys(config.objects).length).fill(0)),
   });
   const [mouseDown, setMouseDown] = createSignal(false);
-
+  const defaultLayer = [[emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection], [emptySection, emptySection, emptySection]]
 
   const [names, setNames] = createSignal((Object.keys(config.objects)));
   const [codes, setCodes] = createSignal(Object.values(config.objects));
@@ -42,8 +41,9 @@ const Editor = () => {
   const [changed, setChanged] = createSignal(false);
   const [layerTransparency, setLayerTransparency] = createSignal(0.5);
   const [savedStates, setSavedStates] = createSignal([])
-  const [lastWorldMap, setLastWorldMap] = createSignal([[[emptySection]], [[emptySection]], [[emptySection]]]);
-
+  const [lastWorldMap, setLastWorldMap] = createSignal([defaultLayer, defaultLayer, defaultLayer]);
+  const [layersWorldMap, setLayersWorldMap] = createSignal([defaultLayer, defaultLayer, defaultLayer])
+  const [undoneLayersWorldMap, setUndoneLayersWorldMap] = createSignal([])
   const getBackgroundColor = (rowIndex, colIndex) => {
     let color = worldmap()[rowIndex][colIndex].color;
     // If this one is filled already, we should do this one
@@ -71,7 +71,6 @@ const Editor = () => {
   const saveMaps = () => {
     if (changed()) {
       setChanged(false);
-      console.log(`Saved States: ${savedStates().length}`)
 
       if (savedStates().length > 10) {
         let savedStatesTemp = savedStates();
@@ -82,6 +81,9 @@ const Editor = () => {
       let savedStatesTemp = savedStates();
       savedStatesTemp.push(lastWorldMap());
       setSavedStates(savedStatesTemp);
+      setLastWorldMap(layersWorldMap());
+
+      setUndoneLayersWorldMap([]);
     }
 
   }
@@ -95,7 +97,6 @@ const Editor = () => {
     }
     document.body.onmouseup = () => {
       setMouseDown(false);
-      console.log("Calling save maps")
       saveMaps();
     }
 
@@ -103,39 +104,38 @@ const Editor = () => {
     document.addEventListener('keydown', e => {
       switch(e.key) {
         case "u":
-          
+          console.log(savedStates())
           if (savedStates().length > 0) {
             let tempPreviousWorldState = savedStates();
-            let previousMap = tempPreviousWorldState.pop(0)
+            let previousMap = tempPreviousWorldState.pop()
 
             setWorldMap(previousMap[layer()]);
 
-            let transferMap = [];
-
-            for (let k = 0; k < layerCount(); k++) {
-              transferMap.push([]);
-              for (let i = 0; i < gridSizeY(); i++) {
-                transferMap.at(k).push([])
-                for (let j = 0; j < gridSizeX(); j++) {
-                  transferMap[k][i].push(savedStates()[0][k][i][j]);
-                }
-              }
-            }
-            
-            if (tempPreviousWorldState.length > 0) {
-              setLastWorldMap[tempPreviousWorldState[0]]
-            } else {
-              setLastWorldMap(previousMap);
-            }
-            tempPreviousWorldState.push(transferMap);
-            setLayersWorldMap(transferMap);
+            let tempRedoWorldStates = undoneLayersWorldMap();
+            tempRedoWorldStates.push(layersWorldMap());
+            setUndoneLayersWorldMap(tempRedoWorldStates);
+            setLayersWorldMap(previousMap);
             setSavedStates(tempPreviousWorldState);
 
           }
           break;
+        case "r":
+          if (undoneLayersWorldMap().length > 0) {
+            let tempRedoneWorldState = undoneLayersWorldMap();
+            let tempPreviousWorldState = savedStates();
+            let redoMap = tempRedoneWorldState.pop();
+
+            setWorldMap(redoMap[layer()]);
+            tempPreviousWorldState.push(layersWorldMap());
+
+            setUndoneLayersWorldMap(tempRedoneWorldState);
+            setLayersWorldMap(redoMap);
+            setSavedStates(tempPreviousWorldState);
+          }
+
+          break;
         case "Tab":
           setIsEditing(!isEditing());
-          console.log(isEditing());
           break;
         case "e":
           setCurrentSelected({ code: -1, name: 'Empty', color: '#000000' });
@@ -170,7 +170,6 @@ const Editor = () => {
         default:
           break;
       }
-      console.log(e.key)
     })
     
   })
@@ -391,9 +390,7 @@ const Editor = () => {
       }
     }
 
-    setLastWorldMap(transferMap);
     transferMap[layer()] = oldMap;
-
     setLayersWorldMap(transferMap);
   };
 
@@ -599,7 +596,20 @@ const Editor = () => {
               </label>
             </div>
             <button type="button" class="btn btn-primary" onClick={() => {
+              console.log(layersWorldMap()[0].length) // y
+              console.log(layersWorldMap()[0][0].length) // x
+
+              let oldY = layersWorldMap()[0].length;
+              let oldX = layersWorldMap()[0][0].length;
+
+              let newX = gridSizeX();
+              let newY = gridSizeY();
+
+              let columnsAdded = newX - oldX;
+              let rowsAdded = newY - oldY;
+              
               const newMap = []
+              
               for (let k = 0; k < layerCount(); k++) {
                 newMap.push([]);
                 for (let i = 0; i < gridSizeY(); i++) {
@@ -611,6 +621,8 @@ const Editor = () => {
               }
               setWorldMap(newMap[layer()])
               setLayersWorldMap(newMap);
+              setLastWorldMap(newMap);
+              setSavedStates([]);
             }}>Set</button>
             <h2 class="card-title mt-8">Current Selection</h2>
             <span>{currentSelected().name}</span>
