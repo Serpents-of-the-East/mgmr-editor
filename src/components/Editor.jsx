@@ -171,6 +171,10 @@ const Editor = () => {
           default:
             break;
         }
+      } else {
+        if (e.key == "Tab") {
+          setIsEditing(!isEditing());
+        }
       }
     })
     
