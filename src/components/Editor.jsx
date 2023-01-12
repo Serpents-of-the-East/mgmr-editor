@@ -268,11 +268,14 @@ const Editor = () => {
       const parsedGoals = (new Array(Object.keys(config.objects).length).fill(0));
 
       goalStrings.forEach(goal => {
+        // console.log(goal);
+        // console.log(goal.split(':'))
         const [count, id] = goal.split(':').map(num => Number.parseInt(num, 10));
         parsedGoals[id - 1] = count;
       });
 
       setSaveInfo(lastValue => ({ ...lastValue, goals: parsedGoals }));
+      console.log(saveInfo())
 
       // { code: -1, name: 'Empty', color: '' }
       // Load layer 0

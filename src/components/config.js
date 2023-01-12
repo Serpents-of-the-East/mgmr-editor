@@ -186,7 +186,7 @@ const config = {
       name: 'Swim',
       color: '#0047AB'
     },
-    Burn: {
+    Hot: {
       code: 72,
       name: 'Burn',
       color: '#0047AB'
@@ -211,7 +211,7 @@ const config = {
       name: 'Pull',
       color: '#0047AB'
     },
-    Sink: {
+    Water: {
       code: 77,
       name: 'Sink',
       color: '#0047AB'
