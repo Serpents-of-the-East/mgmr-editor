@@ -188,7 +188,7 @@ const config = {
     },
     Hot: {
       code: 72,
-      name: 'Burn',
+      name: 'Hot',
       color: '#0047AB'
     },
     Send: {
@@ -213,7 +213,7 @@ const config = {
     },
     Water: {
       code: 77,
-      name: 'Sink',
+      name: 'Water',
       color: '#0047AB'
     },
     Chill: {
