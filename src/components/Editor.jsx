@@ -102,73 +102,79 @@ const Editor = () => {
 
     
     document.addEventListener('keydown', e => {
-      switch(e.key) {
-        case "u":
-          console.log(savedStates())
-          if (savedStates().length > 0) {
-            let tempPreviousWorldState = savedStates();
-            let previousMap = tempPreviousWorldState.pop()
+      if (isEditing) {
+        switch(e.key) {
+          case "u":
+            console.log(savedStates())
+            if (savedStates().length > 0) {
+              let tempPreviousWorldState = savedStates();
+              let previousMap = tempPreviousWorldState.pop()
 
-            setWorldMap(previousMap[layer()]);
+              setWorldMap(previousMap[layer()]);
 
-            let tempRedoWorldStates = undoneLayersWorldMap();
-            tempRedoWorldStates.push(layersWorldMap());
-            setUndoneLayersWorldMap(tempRedoWorldStates);
-            setLayersWorldMap(previousMap);
-            setSavedStates(tempPreviousWorldState);
+              let tempRedoWorldStates = undoneLayersWorldMap();
+              tempRedoWorldStates.push(layersWorldMap());
+              setUndoneLayersWorldMap(tempRedoWorldStates);
+              setLayersWorldMap(previousMap);
+              setSavedStates(tempPreviousWorldState);
 
-          }
-          break;
-        case "r":
-          if (undoneLayersWorldMap().length > 0) {
-            let tempRedoneWorldState = undoneLayersWorldMap();
-            let tempPreviousWorldState = savedStates();
-            let redoMap = tempRedoneWorldState.pop();
+            }
+            break;
+          case "r":
+            if (undoneLayersWorldMap().length > 0) {
+              let tempRedoneWorldState = undoneLayersWorldMap();
+              let tempPreviousWorldState = savedStates();
+              let redoMap = tempRedoneWorldState.pop();
 
-            setWorldMap(redoMap[layer()]);
-            tempPreviousWorldState.push(layersWorldMap());
+              setWorldMap(redoMap[layer()]);
+              tempPreviousWorldState.push(layersWorldMap());
 
-            setUndoneLayersWorldMap(tempRedoneWorldState);
-            setLayersWorldMap(redoMap);
-            setSavedStates(tempPreviousWorldState);
-          }
+              setUndoneLayersWorldMap(tempRedoneWorldState);
+              setLayersWorldMap(redoMap);
+              setSavedStates(tempPreviousWorldState);
+            }
 
-          break;
-        case "Tab":
+            break;
+          case "Tab":
+            setIsEditing(!isEditing());
+            break;
+          case "e":
+            setCurrentSelected({ code: -1, name: 'Empty', color: '#000000' });
+            break;
+          case "w":
+            setCurrentSelected(config.objects.Wall);
+            break;
+          case "f":
+            setCurrentSelected(config.objects.Floor);
+            break;
+
+          case "i":
+            setCurrentSelected(config.objectsText.I);
+            break;
+        
+          case "s":
+            setCurrentSelected(config.verbs.is);
+            break;
+
+          case "a":
+            setCurrentSelected(config.verbs.am);        
+            break;
+          
+          case "c":
+            setCurrentSelected(config.verbs.can);        
+            break;
+          
+          case "d":
+            setCurrentSelected(config.verbs.and);        
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        if (e.key == "Tab") {
           setIsEditing(!isEditing());
-          break;
-        case "e":
-          setCurrentSelected({ code: -1, name: 'Empty', color: '#000000' });
-          break;
-        case "w":
-          setCurrentSelected(config.objects.Wall);
-          break;
-        case "f":
-          setCurrentSelected(config.objects.Floor);
-          break;
-
-        case "i":
-          setCurrentSelected(config.objectsText.I);
-          break;
-      
-        case "s":
-          setCurrentSelected(config.verbs.is);
-          break;
-
-        case "a":
-          setCurrentSelected(config.verbs.am);        
-          break;
-        
-        case "c":
-          setCurrentSelected(config.verbs.can);        
-          break;
-        
-        case "d":
-          setCurrentSelected(config.verbs.and);        
-          break;
-
-        default:
-          break;
+        }
       }
     })
     
