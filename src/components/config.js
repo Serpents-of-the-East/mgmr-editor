@@ -181,9 +181,9 @@ const config = {
       name: 'Climb',
       color: '#0047AB'
     },
-    Swim: {
+    Float: {
       code: 71,
-      name: 'Swim',
+      name: 'Float',
       color: '#0047AB'
     },
     Hot: {
